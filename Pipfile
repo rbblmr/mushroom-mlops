@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+gcsfs = "*"
+fsspec = "*"
+numpy = "*"
+flask = "*"
+pandas = "*"
+fastparquet = "*"
+jupyter = "*"
+jupyterlab-lsp = "*"
+python-lsp-server[all] = "*"
+
+[requires]
+python_version = "3.9"
+
