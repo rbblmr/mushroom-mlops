@@ -1,0 +1,39 @@
+artifact_path: model
+flavors:
+  python_function:
+    data: model.xgb
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.9.19
+  xgboost:
+    code: null
+    data: model.xgb
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: xgb
+    xgb_version: 2.1.1
+mlflow_version: 2.15.1
+model_size_bytes: 20527757
+model_uuid: 261a1ced0e5845aeb135eb43a35de747
+run_id: 8a4d71125c52422590f3e6a6601d218c
+signature:
+  inputs: '[{"type": "double", "name": "num__cap-diameter", "required": true}, {"type":
+    "double", "name": "num__stem-height", "required": true}, {"type": "double", "name":
+    "num__stem-width", "required": true}, {"type": "double", "name": "cat__cap-shape",
+    "required": true}, {"type": "double", "name": "cat__cap-surface", "required":
+    true}, {"type": "double", "name": "cat__cap-color", "required": true}, {"type":
+    "double", "name": "cat__does-bruise-or-bleed", "required": true}, {"type": "double",
+    "name": "cat__gill-attachment", "required": true}, {"type": "double", "name":
+    "cat__gill-spacing", "required": true}, {"type": "double", "name": "cat__gill-color",
+    "required": true}, {"type": "double", "name": "cat__stem-root", "required": true},
+    {"type": "double", "name": "cat__stem-surface", "required": true}, {"type": "double",
+    "name": "cat__stem-color", "required": true}, {"type": "double", "name": "cat__veil-type",
+    "required": true}, {"type": "double", "name": "cat__veil-color", "required": true},
+    {"type": "double", "name": "cat__has-ring", "required": true}, {"type": "double",
+    "name": "cat__ring-type", "required": true}, {"type": "double", "name": "cat__spore-print-color",
+    "required": true}, {"type": "double", "name": "cat__habitat", "required": true},
+    {"type": "double", "name": "cat__season", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
+  params: null
+utc_time_created: '2024-08-21 09:34:20.816792'

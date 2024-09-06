@@ -1,0 +1,83 @@
+
+networks:
+  - back-tier
+  - front-tier
+  - mlflow-net
+volumes:
+  test-mlflow-db-data:
+
+services:
+  test-mlflow-db:
+    image: postgres:14.3
+    container_name: test-mlflow-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    expose:
+      - 5432
+    volumes:
+      - test-mlflow-db-data/:var/lib/postgres/data
+    networks:
+      - mlflow-net
+
+  test-mlflow-server:
+    image: rbblmr/mushroom-mlops:latest
+    container_name: test-mlflow-server
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
+    expose:
+      - 5000
+    command: mlflow server --host 0.0.0.0 --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@test-mlflow-db:5432/${POSTGRES_DB} --default-artifact-root s3://${AWS_BUCKET_NAME}/test-mlflow
+    depends_on:
+      - test-mlflow-db
+    networks:
+      - mlflow-net
+
+  test-prefect:
+    image: rbblmr/mushroom-mlops:latest
+    container_name: test-prefect
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
+      MLFLOW_TRACKING_URI: http://test-mlflow-server:5000
+      EXPERIMENT_NAME: ${EXPERIMENT_NAME}
+    expose:
+      - 4200
+    command: prefect server start
+    depends_on:
+      - test-mlflow-server
+    networks:
+      - mlflow-net
+
+  test-mushroom-web-service:
+    image: rbblmr/mushroom-mlops:latest
+    container_name: test-mushroom-web-service
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
+      MLFLOW_TRACKING_URI: http://test-mlflow-server:5000
+      EXPERIMENT_NAME: ${EXPERIMENT_NAME}
+    expose:
+      - 9696
+    ports:
+      - 9696:9696
+    depends_on:
+      - mlflow-server
+    command: gunicorn --bind=0.0.0.0:9696 --timeout 300 app:app
+    volumes:
+      - ./app:/app
+    networks:
+     - back-tier
+     - front-tier
+     - mflow-net

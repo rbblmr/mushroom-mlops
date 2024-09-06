@@ -1,0 +1,43 @@
+name: Continuous Integration
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on:
+  push:
+    branches:
+      - 'main'
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_REGION }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  EXPERIMENT_NAME: ${{ secrets.EXPERIMENT_NAME }}
+  KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+
+jobs:
+  mlops-ontinuous-integration:
+    runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5 
+        with:
+          python-version: '3.9'
+
+      - name: Run unit tests
+        run: 
+
+      - name: Run quality check
+        working-directory: "app/"
+        run: pipenv run pylint --recursive=y .
+
+      - name: Run integration tests
+        working_directory: "app/integration-test"
+        run: |
+          run.sh
+      
+      - name: Push to Docker
+      - 
