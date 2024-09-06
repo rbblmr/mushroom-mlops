@@ -1,2 +1,9 @@
 .ipynb_checkpoints
+.virtual_documents
 data/
+kaggle*
+.env
+.terraform*
+airflow
+logs/*
+conda.yaml
